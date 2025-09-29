@@ -1,1 +1,2 @@
 The project aims to enhance to efficiency, security and organization of student bag storage and retrieval in educational institutions.By implementing a BAR code system, each student bag and ID card will be uniquely identified, streamlining the entire process.By leveraging unique BAR codes for both student ID card and bags, the system aims to enhance organization,security and efficiency in managing student belongings.
+Developed By: Inderjit Singh. © 2025 Store-Bag-System. All Rights Reserved.
