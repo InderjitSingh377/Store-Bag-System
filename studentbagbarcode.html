@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan and Retrieve QR Codes</title>
+    <style>
+        .container {
+            max-width: 900px;
+            font-family: Courier New, Courier, monospace;
+            color: black;
+            background-color: white;
+            margin: 100px auto;
+            padding: 20px;
+            border: 5px solid black;
+            border-radius: 9px;
+            box-shadow: 10px 10px 5px lightblue;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .barcode-container {
+            margin-bottom: 20px;
+        }
+
+        .barcode {
+            width: 200px;
+            height: auto;
+            margin-right: 10px;
+        }
+
+        .header {
+            margin: 0;
+            font-family: 'Copperplate Gothic';
+            background-color: none;
+            color: black;
+            min-height: 2vh;
+            padding: 0px;
+        }
+
+        .barcode-text {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .header-right {
+            float: right;
+            display: flex;
+            align-items: center;
+        }
+
+        body {
+            background-image: url('cu.jfif');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+    <script type="text/javascript">
+        function handleBagQRCodeInput(event) {
+            const bagField = document.getElementById('BagQRCodeTextBox');
+            if (bagField.value.length >= 6) {
+                document.getElementById('StudentIDQRCodeTextBox').focus();
+            }
+        }
+
+        function handleStudentIDQRCodeInput(event) {
+            const studentField = document.getElementById('StudentIDQRCodeTextBox');
+            if (studentField.value.length >= 6) {
+                mergeData();
+            }
+        }
+
+        function mergeData() {
+            const bagQRCode = document.getElementById('BagQRCodeTextBox').value;
+            const studentIDQRCode = document.getElementById('StudentIDQRCodeTextBox').value;
+
+            if (bagQRCode && studentIDQRCode) {
+                const mergedData = `${bagQRCode}-${studentIDQRCode}`;
+                const mergedTable = document.getElementById('MergedDataGrid').getElementsByTagName('tbody')[0];
+                const newRow = mergedTable.insertRow();
+                newRow.innerHTML = `
+                    <td>${mergedTable.rows.length}</td>
+                    <td>${bagQRCode}</td>
+                    <td>${studentIDQRCode}</td>
+                    <td>${mergedData}</td>
+                `;
+
+                // Clear input fields after merging
+                document.getElementById('BagQRCodeTextBox').value = '';
+                document.getElementById('StudentIDQRCodeTextBox').value = '';
+            }
+        }
+
+        function retrieveData() {
+            const studentID = document.getElementById('RetrieveStudentIDQRCodeTextBox').value;
+            const mergedTable = document.getElementById('MergedDataGrid').getElementsByTagName('tbody')[0];
+            const retrievedTable = document.getElementById('RetrievedDataGrid').getElementsByTagName('tbody')[0];
+            retrievedTable.innerHTML = ''; // Clear previous retrieved data
+
+            for (let i = 0; i < mergedTable.rows.length; i++) {
+                const row = mergedTable.rows[i];
+                const studentIDQRCode = row.cells[2].innerText;
+
+                if (studentIDQRCode === studentID) {
+                    const newRow = retrievedTable.insertRow();
+                    newRow.innerHTML = row.innerHTML;
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1 style="border: 3px solid black; outline: orange solid 8px; margin: auto; padding: 20px; text-align: center;">
+            <center><strong><b> Bag Storage and Retrieval</b></strong></center>
+        </h1>
+        <br>
+        <!-- <div class="header-right">
+            <a class="active" href="#home">HOME</a>
+            <a href="#contact">CONTACT</a>
+            <a href="#about">ABOUT</a>
+        </div>  -->
+    </div>
+
+    <div class="container">
+        <div>
+            <h2 style="border-style: solid; border-left-width: 10px;">Scan Bag BAR Code</h2>
+            <label for="BagQRCodeTextBox">Bag BAR Code:</label>
+            <input type="text" id="BagQRCodeTextBox" oninput="handleBagQRCodeInput(event)">
+            <br />
+        </div>
+
+        <div>
+            <h2 style="border-style: solid; border-left-width: 10px;">Scan Student ID BAR Code</h2>
+            <label for="StudentIDQRCodeTextBox">Student ID BAR Code:</label>
+            <input type="text" id="StudentIDQRCodeTextBox" oninput="handleStudentIDQRCodeInput(event)">
+            <br />
+        </div>
+
+        <div>
+            <h2 style="border-style: solid; border-left-width: 10px; text-align: center;"><mark> Merged BAR Code Data </mark></h2>
+            <table id="MergedDataGrid">
+                <thead>
+                    <tr>
+                        <th>Serial ID</th>
+                        <th>Bag QR Code</th>
+                        <th>Student ID QR Code</th>
+                        <th>Merged Data</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div>
+            <h2>Retrieve Bag by Student ID</h2>
+            <label for="RetrieveStudentIDQRCodeTextBox">Student ID BAR Code:</label>
+            <input type="text" id="RetrieveStudentIDQRCodeTextBox">
+            <br />
+            <button onclick="retrieveData()">Retrieve</button>
+        </div>
+
+        <div>
+            <h2>Retrieved Data</h2>
+            <table id="RetrievedDataGrid">
+                <thead>
+                    <tr>
+                        <th>Serial ID</th>
+                        <th>Bag BAR Code</th>
+                        <th>Student ID BAR Code</th>
+                        <th>Merged Data</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
